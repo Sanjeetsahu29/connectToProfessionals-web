@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar";
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
+      <BrowserRouter basename="/">
+        <Routes>
+          <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/login" element={<div>Login Page</div>} />
+          <Route path="/test" element={<div>Test Page</div>} />
+        </Routes>
+      </BrowserRouter>
       <Navbar />
     </>
   );
