@@ -1,14 +1,16 @@
-import React from "react";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 
 const Body = () => {
   return (
-    <div>
+    <div className="min-h-screen">
       <Navbar />
-      {/* any children routes of body will render here */}
-      <Outlet />
+
+      <main className="pt-16 pb-14">
+        <Outlet />
+      </main>
+
       <Footer />
     </div>
   );
