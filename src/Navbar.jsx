@@ -1,15 +1,31 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import logo1 from "./assets/logo1.png";
 import { removeUser } from "./utils/userSlice";
+import { BASE_URL } from "./utils/constant";
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(removeUser());
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        BASE_URL + "/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      navigate("/login");
+      dispatch(removeUser());
+    } catch (error) {
+      console.error("Error in logging out:", error);
+    }
   };
 
   return (
@@ -28,19 +44,16 @@ const Navbar = () => {
       {/* RIGHT SIDE */}
       <div className="flex items-center">
         {user ? (
-          /* ================= LOGGED IN ================= */
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
               role="button"
               className="btn btn-ghost flex items-center gap-2 sm:gap-3"
             >
-              {/* Welcome text */}
               <span className="hidden sm:block text-sm font-medium">
                 Welcome, {user.firstName}
               </span>
 
-              {/* Profile image */}
               <div className="avatar">
                 <div className="w-9 sm:w-10 rounded-full">
                   <img alt="User profile" src={user?.profilePhoto} />
@@ -48,12 +61,10 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Logged-in dropdown */}
             <ul
               tabIndex={-1}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow-lg"
             >
-              {/* User information */}
               <li className="menu-title">
                 <span>
                   {user.firstName} {user.lastName}
@@ -74,7 +85,6 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          /* ================= LOGGED OUT ================= */
           <div className="flex items-center gap-2">
             <Link to="/login" className="btn btn-ghost btn-sm sm:btn-md">
               Login
