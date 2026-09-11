@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import logo1 from "./assets/logo1.png";
 import { removeUser } from "./utils/userSlice";
@@ -7,24 +7,22 @@ import { removeUser } from "./utils/userSlice";
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(removeUser());
-    navigate("/login");
   };
 
   return (
     <div className="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-50 h-16 px-4 sm:px-6">
       {/* Logo */}
       <div className="flex-1">
-        <button onClick={() => navigate("/")} className="cursor-pointer">
+        <Link to="/" className="cursor-pointer">
           <img
             src={logo1}
             alt="Connect to Professionals"
             className="h-14 sm:h-16 w-auto object-contain"
           />
-        </button>
+        </Link>
       </div>
 
       {/* RIGHT SIDE */}
@@ -37,7 +35,7 @@ const Navbar = () => {
               role="button"
               className="btn btn-ghost flex items-center gap-2 sm:gap-3"
             >
-              {/* Welcome text - hidden on very small screens */}
+              {/* Welcome text */}
               <span className="hidden sm:block text-sm font-medium">
                 Welcome, {user.firstName}
               </span>
@@ -63,11 +61,11 @@ const Navbar = () => {
               </li>
 
               <li>
-                <button onClick={() => navigate("/profile")}>Profile</button>
+                <Link to="/profile">Profile</Link>
               </li>
 
               <li>
-                <button onClick={() => navigate("/settings")}>Settings</button>
+                <Link to="/settings">Settings</Link>
               </li>
 
               <li>
@@ -78,19 +76,13 @@ const Navbar = () => {
         ) : (
           /* ================= LOGGED OUT ================= */
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate("/login")}
-              className="btn btn-ghost btn-sm sm:btn-md"
-            >
+            <Link to="/login" className="btn btn-ghost btn-sm sm:btn-md">
               Login
-            </button>
+            </Link>
 
-            <button
-              onClick={() => navigate("/signup")}
-              className="btn btn-primary btn-sm sm:btn-md"
-            >
+            <Link to="/signup" className="btn btn-primary btn-sm sm:btn-md">
               Sign Up
-            </button>
+            </Link>
           </div>
         )}
       </div>
