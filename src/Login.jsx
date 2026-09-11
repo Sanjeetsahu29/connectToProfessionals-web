@@ -2,13 +2,15 @@ import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "./utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "./utils/constant";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -16,7 +18,6 @@ export default function Login() {
     e.preventDefault();
     try {
       setLoading(true);
-
       const response = await axios.post(
         BASE_URL + "/auth/login",
         {
@@ -32,7 +33,8 @@ export default function Login() {
       dispatch(addUser(response.data.user));
       navigate("/");
     } catch (err) {
-      console.error("Login failed:", err);
+      setError(err.response?.data?.message || "Something went wrong");
+      console.error(err.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -157,6 +159,7 @@ export default function Login() {
                       {showPassword ? "Hide" : "Show"}
                     </button>
                   </div>
+                  <p className="text-xs text-red-600">{error}</p>
                 </div>
 
                 {/* Submit */}
@@ -179,12 +182,12 @@ export default function Login() {
               {/* Sign up */}
               <p className="text-center text-sm text-slate-500 dark:text-slate-400">
                 Don't have an account?{" "}
-                <a
-                  href="/signup"
+                <Link
+                  to="/signup"
                   className="font-semibold text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400"
                 >
                   Create an account
-                </a>
+                </Link>
               </p>
             </div>
           </div>
