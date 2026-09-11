@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-
+import Feed from "./Feed";
 import Login from "./Login";
 import Profile from "./Profile";
 import Body from "./Body";
-import Explore from "./Explore";
 import appStore from "./utils/appStore";
 
 const App = () => {
@@ -14,7 +13,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Body />}>
             {/* Default route: / */}
-            <Route path="/" element={<Explore />} />
+            <Route path="/" element={<Feed />} />
 
             {/* /login */}
             <Route path="/login" element={<Login />} />

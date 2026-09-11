@@ -21,8 +21,8 @@ const Navbar = () => {
         },
       );
 
-      navigate("/login");
       dispatch(removeUser());
+      navigate("/login");
     } catch (error) {
       console.error("Error in logging out:", error);
     }
@@ -32,7 +32,7 @@ const Navbar = () => {
     <div className="navbar bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-50 h-16 px-4 sm:px-6">
       {/* Logo */}
       <div className="flex-1">
-        <Link to="/" className="cursor-pointer">
+        <Link to={user ? "/" : "/login"} className="cursor-pointer">
           <img
             src={logo1}
             alt="Connect to Professionals"
