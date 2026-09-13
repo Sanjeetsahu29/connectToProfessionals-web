@@ -6,7 +6,9 @@ import Body from "./Body";
 import appStore from "./utils/appStore";
 import EditProfile from "./EditProfile";
 import Connections from "./Connections";
-import Requests from "./Requests";
+import Requests from "./RequestReceived";
+import Profile from "./Profile";
+import Signup from "./Signup";
 
 const App = () => {
   return (
@@ -22,8 +24,11 @@ const App = () => {
 
             {/* /profile */}
             <Route path="/profile" element={<EditProfile />} />
+            <Route path="/profile/:id" element={<Profile />} />
+
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Requests />} />
+            <Route path="/signup" element={<Signup />} />
           </Route>
         </Routes>
       </BrowserRouter>

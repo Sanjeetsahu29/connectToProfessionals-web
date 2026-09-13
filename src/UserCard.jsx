@@ -1,11 +1,12 @@
 import { useState } from "react";
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, onInterest, onIgnore, actionLoading }) => {
   const [showModal, setShowModal] = useState(false);
 
   const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
 
   const skills = Array.isArray(user.skills) ? user.skills : [];
+
   const interests = Array.isArray(user.interests) ? user.interests : [];
 
   const profileImage =
@@ -16,14 +17,41 @@ const UserCard = ({ user }) => {
 
   return (
     <>
-      <div className="group w-[60 vw] max-w-sm overflow-hidden rounded-3xl border border-base-300 bg-base-100 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+      {/* =====================================================
+          USER CARD
+      ===================================================== */}
+
+      <div
+        className="
+          group
+          w-full
+          max-w-sm
+          overflow-hidden
+          rounded-3xl
+          border
+          border-base-300
+          bg-base-100
+          shadow-md
+          transition-all
+          duration-300
+          hover:-translate-y-1
+          hover:shadow-2xl
+        "
+      >
         {/* ================= PROFILE IMAGE ================= */}
 
         <div className="relative h-80 overflow-hidden">
           <img
             src={profileImage}
             alt={fullName}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="
+              h-full
+              w-full
+              object-cover
+              transition
+              duration-500
+              group-hover:scale-105
+            "
             onError={(e) => {
               e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
                 fullName,
@@ -31,13 +59,30 @@ const UserCard = ({ user }) => {
             }}
           />
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+          {/* Gradient */}
 
-          {/* Profession */}
+          <div
+            className="
+              absolute
+              inset-0
+              bg-gradient-to-t
+              from-black/80
+              via-black/10
+              to-transparent
+            "
+          />
 
-          {/* Name on image */}
-          <div className="absolute bottom-5 left-5 right-5 text-white">
+          {/* Name */}
+
+          <div
+            className="
+              absolute
+              bottom-5
+              left-5
+              right-5
+              text-white
+            "
+          >
             <h2 className="text-2xl font-extrabold tracking-tight">
               {fullName}
             </h2>
@@ -52,21 +97,51 @@ const UserCard = ({ user }) => {
 
         <div className="p-5">
           {/* Basic information */}
+
           <div className="flex flex-wrap gap-2">
             {user.age && (
-              <span className="rounded-full bg-base-200 px-3 py-1.5 text-xs font-semibold">
+              <span
+                className="
+                  rounded-full
+                  bg-base-200
+                  px-3
+                  py-1.5
+                  text-xs
+                  font-semibold
+                "
+              >
                 🎂 {user.age} years
               </span>
             )}
 
             {user.gender && (
-              <span className="rounded-full bg-base-200 px-3 py-1.5 text-xs font-semibold capitalize">
-                {user.gender}
+              <span
+                className="
+                  rounded-full
+                  bg-base-200
+                  px-3
+                  py-1.5
+                  text-xs
+                  font-semibold
+                  capitalize
+                "
+              >
+                👤 {user.gender}
               </span>
             )}
 
             {user.profession && (
-              <span className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+              <span
+                className="
+                  rounded-full
+                  bg-primary/10
+                  px-3
+                  py-1.5
+                  text-xs
+                  font-semibold
+                  text-primary
+                "
+              >
                 💼 {user.profession}
               </span>
             )}
@@ -76,7 +151,7 @@ const UserCard = ({ user }) => {
 
           <div className="mt-5">
             <div className="rounded-2xl bg-base-200/60 p-4">
-              <p className="text-sm leading-6 text-base-content/70">
+              <p className="text-sm leading-6 text-base-content/70 line-clamp-4">
                 {user.about
                   ? user.about
                   : "This user hasn't added an introduction yet."}
@@ -87,51 +162,166 @@ const UserCard = ({ user }) => {
           {/* ================= ACTIONS ================= */}
 
           <div className="mt-6 grid grid-cols-3 gap-2">
+            {/* VIEW */}
+
             <button
               onClick={() => setShowModal(true)}
-              className="btn btn-neutral rounded-xl"
+              disabled={actionLoading}
+              className="
+                btn
+                btn-neutral
+                rounded-xl
+              "
             >
               View
             </button>
 
-            <button className="btn btn-success rounded-xl text-white">
-              Interested
+            {/* INTERESTED */}
+
+            <button
+              onClick={onInterest}
+              disabled={actionLoading}
+              className="
+                btn
+                btn-success
+                rounded-xl
+                text-white
+              "
+            >
+              {actionLoading ? (
+                <span className="loading loading-spinner loading-sm" />
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Interested
+                </>
+              )}
             </button>
 
-            <button className="btn btn-error rounded-xl text-white">
-              Ignore
+            {/* IGNORE */}
+
+            <button
+              onClick={onIgnore}
+              disabled={actionLoading}
+              className="
+                btn
+                btn-error
+                rounded-xl
+                text-white
+              "
+            >
+              {actionLoading ? (
+                <span className="loading loading-spinner loading-sm" />
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                  Ignore
+                </>
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* ========================================================= */}
-      {/*                       VIEW MODAL                          */}
-      {/* ========================================================= */}
+      {/* =====================================================
+          VIEW MODAL
+      ===================================================== */}
 
       {showModal && (
         <dialog open className="modal modal-bottom sm:modal-middle">
-          <div className="modal-box max-h-[92vh] max-w-3xl overflow-y-auto p-0">
+          <div
+            className="
+              modal-box
+              max-h-[92vh]
+              max-w-3xl
+              overflow-y-auto
+              p-0
+            "
+          >
             {/* ================= MODAL HEADER ================= */}
 
             <div className="relative">
-              {/* Cover */}
-              <div className="h-36 bg-gradient-to-r from-primary via-secondary to-accent sm:h-44">
-                <div className="absolute inset-0 bg-black/10" />
-              </div>
+              <div
+                className="
+                  h-36
+                  bg-gradient-to-r
+                  from-primary
+                  via-secondary
+                  to-accent
+                  sm:h-44
+                "
+              />
 
-              {/* Close button */}
+              {/* CLOSE */}
+
               <button
                 onClick={() => setShowModal(false)}
-                className="btn btn-circle btn-sm absolute right-4 top-4 border-none bg-black/30 text-white backdrop-blur-md hover:bg-black/50"
+                className="
+                  btn
+                  btn-circle
+                  btn-sm
+                  absolute
+                  right-4
+                  top-4
+                  border-none
+                  bg-black/30
+                  text-white
+                  backdrop-blur-md
+                  hover:bg-black/50
+                "
               >
                 ✕
               </button>
 
               {/* Profile image */}
-              <div className="absolute left-1/2 top-16 -translate-x-1/2 sm:top-20">
+
+              <div
+                className="
+                  absolute
+                  left-1/2
+                  top-16
+                  -translate-x-1/2
+                  sm:top-20
+                "
+              >
                 <div className="avatar">
-                  <div className="w-32 rounded-full border-4 border-base-100 bg-base-100 shadow-2xl sm:w-36">
+                  <div
+                    className="
+                      w-32
+                      rounded-full
+                      border-4
+                      border-base-100
+                      bg-base-100
+                      shadow-2xl
+                      sm:w-36
+                    "
+                  >
                     <img
                       src={profileImage}
                       alt={fullName}
@@ -149,7 +339,8 @@ const UserCard = ({ user }) => {
             {/* ================= MODAL CONTENT ================= */}
 
             <div className="px-5 pb-6 pt-24 sm:px-8 sm:pt-28">
-              {/* Name + Profession */}
+              {/* Name */}
+
               <div className="text-center">
                 <h2 className="text-3xl font-extrabold tracking-tight">
                   {fullName}
@@ -166,14 +357,33 @@ const UserCard = ({ user }) => {
                 </p>
               </div>
 
-              {/* ================================================= */}
-              {/* BASIC INFORMATION                                */}
-              {/* ================================================= */}
+              {/* BASIC INFORMATION */}
 
               <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {/* Age */}
-                <div className="rounded-2xl border border-base-300 bg-base-200/50 p-4 text-center">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                {/* AGE */}
+
+                <div
+                  className="
+                    rounded-2xl
+                    border
+                    border-base-300
+                    bg-base-200/50
+                    p-4
+                    text-center
+                  "
+                >
+                  <div
+                    className="
+                      mx-auto
+                      flex
+                      h-10
+                      w-10
+                      items-center
+                      justify-center
+                      rounded-xl
+                      bg-primary/10
+                    "
+                  >
                     🎂
                   </div>
 
@@ -186,9 +396,30 @@ const UserCard = ({ user }) => {
                   </p>
                 </div>
 
-                {/* Gender */}
-                <div className="rounded-2xl border border-base-300 bg-base-200/50 p-4 text-center">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/10">
+                {/* GENDER */}
+
+                <div
+                  className="
+                    rounded-2xl
+                    border
+                    border-base-300
+                    bg-base-200/50
+                    p-4
+                    text-center
+                  "
+                >
+                  <div
+                    className="
+                      mx-auto
+                      flex
+                      h-10
+                      w-10
+                      items-center
+                      justify-center
+                      rounded-xl
+                      bg-secondary/10
+                    "
+                  >
                     👤
                   </div>
 
@@ -201,9 +432,32 @@ const UserCard = ({ user }) => {
                   </p>
                 </div>
 
-                {/* Profession */}
-                <div className="col-span-2 rounded-2xl border border-base-300 bg-base-200/50 p-4 text-center sm:col-span-1">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
+                {/* PROFESSION */}
+
+                <div
+                  className="
+                    col-span-2
+                    rounded-2xl
+                    border
+                    border-base-300
+                    bg-base-200/50
+                    p-4
+                    text-center
+                    sm:col-span-1
+                  "
+                >
+                  <div
+                    className="
+                      mx-auto
+                      flex
+                      h-10
+                      w-10
+                      items-center
+                      justify-center
+                      rounded-xl
+                      bg-accent/10
+                    "
+                  >
                     💼
                   </div>
 
@@ -217,202 +471,186 @@ const UserCard = ({ user }) => {
                 </div>
               </div>
 
-              {/* ================================================= */}
-              {/* ABOUT                                            */}
-              {/* ================================================= */}
+              {/* ABOUT */}
 
               <section className="mt-7">
-                <div className="mb-3 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-lg">
-                    👋
-                  </div>
+                <h3 className="text-lg font-bold">About {user.firstName}</h3>
 
-                  <div>
-                    <h3 className="text-lg font-bold">
-                      About {user.firstName}
-                    </h3>
-
-                    <p className="text-xs text-base-content/40">
-                      A little more about this person
-                    </p>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-base-300 bg-base-200/40 p-5">
-                  {user.about ? (
-                    <p className="whitespace-pre-line text-sm leading-7 text-base-content/70">
-                      {user.about}
-                    </p>
-                  ) : (
-                    <p className="text-sm italic text-base-content/40">
-                      {user.firstName} hasn't added an introduction yet.
-                    </p>
-                  )}
+                <div
+                  className="
+                    mt-3
+                    rounded-2xl
+                    border
+                    border-base-300
+                    bg-base-200/40
+                    p-5
+                  "
+                >
+                  <p className="whitespace-pre-line text-sm leading-7 text-base-content/70">
+                    {user.about ||
+                      `${user.firstName} hasn't added an introduction yet.`}
+                  </p>
                 </div>
               </section>
 
-              {/* ================================================= */}
-              {/* SKILLS                                           */}
-              {/* ================================================= */}
+              {/* SKILLS */}
 
-              <section className="mt-7">
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-lg">
-                      💻
-                    </div>
+              {skills.length > 0 && (
+                <section className="mt-7">
+                  <h3 className="text-lg font-bold">Skills</h3>
 
-                    <div>
-                      <h3 className="text-lg font-bold">Skills</h3>
-
-                      <p className="text-xs text-base-content/40">
-                        {skills.length}{" "}
-                        {skills.length === 1 ? "skill" : "skills"}
-                      </p>
-                    </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="
+                          rounded-full
+                          border
+                          border-primary/20
+                          bg-primary/10
+                          px-4
+                          py-2
+                          text-sm
+                          font-semibold
+                          text-primary
+                        "
+                      >
+                        {skill}
+                      </span>
+                    ))}
                   </div>
-                </div>
+                </section>
+              )}
 
-                {skills.length > 0 ? (
-                  <div className="rounded-2xl border border-base-300 bg-base-200/40 p-5">
-                    <div className="flex flex-wrap gap-2">
-                      {skills.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+              {/* INTERESTS */}
+
+              {interests.length > 0 && (
+                <section className="mt-7">
+                  <h3 className="text-lg font-bold">Interests</h3>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {interests.map((interest, index) => (
+                      <span
+                        key={index}
+                        className="
+                          rounded-full
+                          border
+                          border-secondary/20
+                          bg-secondary/10
+                          px-4
+                          py-2
+                          text-sm
+                          font-semibold
+                          text-secondary
+                        "
+                      >
+                        {interest}
+                      </span>
+                    ))}
                   </div>
-                ) : (
-                  <div className="rounded-2xl border border-base-300 bg-base-200/40 p-5">
-                    <p className="text-sm text-base-content/40">
-                      No skills have been added yet.
-                    </p>
-                  </div>
-                )}
-              </section>
+                </section>
+              )}
 
-              {/* ================================================= */}
-              {/* INTERESTS                                         */}
-              {/* ================================================= */}
-
-              <section className="mt-7">
-                <div className="mb-3 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/10 text-lg">
-                    ❤️
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-bold">Interests</h3>
-
-                    <p className="text-xs text-base-content/40">
-                      Things {user.firstName} enjoys
-                    </p>
-                  </div>
-                </div>
-
-                {interests.length > 0 ? (
-                  <div className="rounded-2xl border border-base-300 bg-base-200/40 p-5">
-                    <div className="flex flex-wrap gap-2">
-                      {interests.map((interest, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full border border-secondary/20 bg-secondary/10 px-4 py-2 text-sm font-semibold text-secondary"
-                        >
-                          {interest}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-base-300 bg-base-200/40 p-5">
-                    <p className="text-sm text-base-content/40">
-                      No interests have been added yet.
-                    </p>
-                  </div>
-                )}
-              </section>
-
-              {/* ================================================= */}
-              {/* PROFILE SUMMARY                                   */}
-              {/* ================================================= */}
-
-              <section className="mt-7">
-                <div className="rounded-2xl bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 p-5">
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-2xl font-extrabold text-primary">
-                        {skills.length}
-                      </p>
-
-                      <p className="mt-1 text-xs text-base-content/50">
-                        Skills
-                      </p>
-                    </div>
-
-                    <div className="border-x border-base-300">
-                      <p className="text-2xl font-extrabold text-secondary">
-                        {interests.length}
-                      </p>
-
-                      <p className="mt-1 text-xs text-base-content/50">
-                        Interests
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-2xl font-extrabold text-accent">
-                        {user.about ? "✓" : "—"}
-                      </p>
-
-                      <p className="mt-1 text-xs text-base-content/50">About</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* ================================================= */}
-              {/* MODAL ACTIONS                                    */}
-              {/* ================================================= */}
+              {/* ================= MODAL ACTIONS ================= */}
 
               <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <button
                   onClick={() => setShowModal(false)}
                   className="btn btn-ghost rounded-xl"
+                  disabled={actionLoading}
                 >
                   Close
                 </button>
 
-                <button
-                  className="btn btn-success rounded-xl text-white"
-                  onClick={() => {
-                    console.log("Interested:", user._id);
-                  }}
-                >
-                  Interested
-                </button>
+                {/* INTEREST */}
 
                 <button
-                  className="btn btn-error rounded-xl text-white"
                   onClick={() => {
-                    console.log("Ignored:", user._id);
+                    onInterest();
                     setShowModal(false);
                   }}
+                  disabled={actionLoading}
+                  className="
+                    btn
+                    btn-success
+                    rounded-xl
+                    text-white
+                  "
                 >
-                  Ignore
+                  {actionLoading ? (
+                    <span className="loading loading-spinner loading-sm" />
+                  ) : (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Interested
+                    </>
+                  )}
+                </button>
+
+                {/* IGNORE */}
+
+                <button
+                  onClick={() => {
+                    onIgnore();
+                    setShowModal(false);
+                  }}
+                  disabled={actionLoading}
+                  className="
+                    btn
+                    btn-error
+                    rounded-xl
+                    text-white
+                  "
+                >
+                  {actionLoading ? (
+                    <span className="loading loading-spinner loading-sm" />
+                  ) : (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Ignore
+                    </>
+                  )}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Click outside modal */}
+          {/* Click outside */}
+
           <div
             className="modal-backdrop"
-            onClick={() => setShowModal(false)}
-          ></div>
+            onClick={() => {
+              if (!actionLoading) {
+                setShowModal(false);
+              }
+            }}
+          />
         </dialog>
       )}
     </>

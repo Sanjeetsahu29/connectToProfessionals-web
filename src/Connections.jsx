@@ -6,163 +6,165 @@ import { Link } from "react-router-dom";
 import { BASE_URL } from "./utils/constant";
 import { addConnections } from "./utils/connectionSlice";
 
+const EMPTY_CONNECTIONS = [];
+
 const Connections = () => {
   const dispatch = useDispatch();
 
-  const connections = useSelector((store) => store.connections || []);
+  // Stable selector fallback
+  const connectionData = useSelector((store) => store.connections);
+
+  const connections = connectionData ?? EMPTY_CONNECTIONS;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchConnections = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await axios.get(BASE_URL + "/user/connections", {
-        withCredentials: true,
-      });
-
-      dispatch(addConnections(response.data.friends || []));
-    } catch (error) {
-      console.error("Error fetching connections:", error);
-      setError("Unable to load your connections.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  /* =========================================================
+     FETCH CONNECTIONS
+  ========================================================= */
 
   useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await axios.get(BASE_URL + "/user/connections", {
+          withCredentials: true,
+        });
+
+        dispatch(addConnections(response.data.friends || []));
+      } catch (error) {
+        console.error("Error fetching connections:", error);
+        setError("Unable to load your connections.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchConnections();
-  }, []);
+  }, [dispatch]);
 
   return (
-    <div className="min-h-screen bg-base-200/50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        {/* ================= HEADER ================= */}
+    <div className="min-h-screen bg-base-200/40 pt-24 pb-12 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto">
+        {/* =================================================
+            HEADER
+        ================================================= */}
+
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div className="flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div
-                  className="
-                    flex items-center justify-center
-                    w-11 h-11
-                    rounded-2xl
-                    bg-primary/10
-                    text-primary
-                  "
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17 20a4 4 0 0 0-8 0m10-7a3 3 0 1 0-6 0m8 7a4 4 0 0 0-3-3.87M7 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 0a4 4 0 0 0-3 3.87"
-                    />
-                  </svg>
-                </div>
+              <p className="text-sm font-semibold text-primary mb-1">NETWORK</p>
 
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                    My Connections
-                  </h1>
+              <h1 className="text-3xl sm:text-4xl font-bold">
+                Your Connections
+              </h1>
 
-                  <p className="text-sm text-base-content/50">
-                    People you're connected with
-                  </p>
-                </div>
-              </div>
+              <p className="text-sm text-base-content/50 mt-2">
+                Stay connected with people in your professional network.
+              </p>
             </div>
 
-            {/* CONNECTION COUNT */}
             {!loading && !error && (
               <div
                 className="
-                  self-start sm:self-auto
+                  hidden sm:flex
+                  items-center gap-2
                   px-4 py-2
-                  rounded-xl
-                  bg-base-100/70
-                  backdrop-blur-xl
+                  rounded-full
+                  bg-base-100
                   border border-base-content/10
                   shadow-sm
                 "
               >
-                <span className="text-sm text-base-content/50">
-                  Connections
-                </span>
+                <span
+                  className="
+                    w-2.5 h-2.5
+                    rounded-full
+                    bg-primary
+                  "
+                />
 
-                <span className="ml-2 font-bold text-primary">
-                  {connections.length}
+                <span className="font-semibold">{connections.length}</span>
+
+                <span className="text-sm text-base-content/50">
+                  connections
                 </span>
               </div>
             )}
           </div>
 
-          {/* DIVIDER */}
-          <div className="h-px bg-base-content/10 mt-6" />
+          <div className="mt-6 h-px bg-base-content/10" />
         </div>
 
-        {/* ================= LOADING ================= */}
+        {/* =================================================
+            LOADING
+        ================================================= */}
+
         {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[1, 2, 3, 4, 5, 6].map((item) => (
+          <div className="space-y-4">
+            {[1, 2, 3, 4].map((item) => (
               <div
                 key={item}
                 className="
-                  h-[330px]
-                  rounded-3xl
                   bg-base-100
                   border border-base-content/10
-                  p-6
+                  rounded-2xl
+                  p-5
                   animate-pulse
                 "
               >
-                <div className="flex flex-col items-center">
-                  <div className="w-24 h-24 rounded-full bg-base-300" />
+                <div className="flex gap-5">
+                  <div
+                    className="
+                      w-20 h-20
+                      sm:w-24 sm:h-24
+                      rounded-2xl
+                      bg-base-300
+                      shrink-0
+                    "
+                  />
 
-                  <div className="w-32 h-5 bg-base-300 rounded mt-4" />
+                  <div className="flex-1">
+                    <div className="w-40 h-5 rounded bg-base-300" />
 
-                  <div className="w-20 h-4 bg-base-300 rounded mt-2" />
+                    <div className="w-28 h-4 rounded bg-base-300 mt-3" />
 
-                  <div className="w-full h-16 bg-base-300 rounded-xl mt-6" />
-
-                  <div className="w-full h-10 bg-base-300 rounded-xl mt-5" />
+                    <div className="w-full max-w-md h-12 rounded bg-base-300 mt-5" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* ================= ERROR ================= */}
+        {/* =================================================
+            ERROR
+        ================================================= */}
+
         {!loading && error && (
           <div
             className="
               max-w-md
               mx-auto
               text-center
-              p-8
-              rounded-3xl
-              bg-base-100/80
-              backdrop-blur-xl
+              bg-base-100
               border border-error/20
-              shadow-lg
+              rounded-2xl
+              p-8
+              shadow-sm
             "
           >
             <div
               className="
-                mx-auto mb-4
+                mx-auto
                 w-14 h-14
-                flex items-center justify-center
-                rounded-2xl
+                rounded-full
                 bg-error/10
                 text-error
+                flex items-center justify-center
+                mb-4
               "
             >
               <svg
@@ -176,51 +178,59 @@ const Connections = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M12 9v3.75m0 3h.008v.008H12v-.008ZM10.29 3.86l-8.1 14a2 2 0 0 0 1.73 3h16.16a2 2 0 0 0 1.73-3l-8.1-14a2 2 0 0 0-3.46 0Z"
+                  d="M12 9v3m0 3h.01M10.29 3.86l-8.1 14a2 2 0 0 0 1.73 3h16.16a2 2 0 0 0 1.73-3l-8.1-14a2 2 0 0 0-3.46 0Z"
                 />
               </svg>
             </div>
 
-            <h2 className="text-lg font-bold mb-1">Something went wrong</h2>
+            <h2 className="text-lg font-bold">Unable to load connections</h2>
 
-            <p className="text-sm text-base-content/50 mb-5">{error}</p>
+            <p className="text-sm text-base-content/50 mt-2">
+              Something went wrong while fetching your connections.
+            </p>
 
             <button
-              onClick={fetchConnections}
-              className="btn btn-primary rounded-xl px-6"
+              onClick={() => window.location.reload()}
+              className="
+                btn
+                btn-primary
+                rounded-xl
+                mt-5
+              "
             >
               Try Again
             </button>
           </div>
         )}
 
-        {/* ================= EMPTY STATE ================= */}
+        {/* =================================================
+            EMPTY STATE
+        ================================================= */}
+
         {!loading && !error && connections.length === 0 && (
           <div
             className="
-              max-w-lg
-              mx-auto
-              text-center
-              py-16
-              px-6
-              rounded-3xl
-
-              bg-base-100/70
-              backdrop-blur-xl
-
-              border border-base-content/10
-              shadow-lg
-            "
+                max-w-lg
+                mx-auto
+                text-center
+                py-16
+                px-6
+                bg-base-100
+                border border-base-content/10
+                rounded-3xl
+                shadow-sm
+              "
           >
             <div
               className="
-                mx-auto mb-5
-                w-20 h-20
-                flex items-center justify-center
-                rounded-3xl
-                bg-primary/10
-                text-primary
-              "
+                  mx-auto
+                  w-20 h-20
+                  rounded-3xl
+                  bg-primary/10
+                  text-primary
+                  flex items-center justify-center
+                  mb-6
+                "
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -233,38 +243,38 @@ const Connections = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M18 18.72a9.094 9.094 0 0 0 3.742-.479M18 18.72a9.094 9.094 0 0 1-3.742-.479M18 18.72v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3a4.5 4.5 0 0 0-4.5 4.5v1.5m12 0a9.094 9.094 0 0 1-12 0m12 0a9.094 9.094 0 0 0-12 0M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  d="M15 19.128a9.094 9.094 0 0 0 3.75.872A9.094 9.094 0 0 0 22.5 19.128M15 19.128v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3a4.5 4.5 0 0 0-4.5 4.5v1.5m12 0a9.094 9.094 0 0 1-12 0M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 2.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM3 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
                 />
               </svg>
             </div>
 
-            <h2 className="text-xl font-bold">No connections yet</h2>
+            <h2 className="text-2xl font-bold">No connections yet</h2>
 
-            <p className="text-sm text-base-content/50 mt-2 mb-6">
-              Start exploring people and build your professional network.
+            <p className="text-base-content/50 mt-2">
+              Discover professionals and start building your network.
             </p>
 
             <Link
               to="/feed"
               className="
-                btn
-                btn-primary
-                rounded-xl
-                px-6
-                shadow-lg
-                shadow-primary/20
-                hover:-translate-y-0.5
-                transition-all
-              "
+                  btn
+                  btn-primary
+                  rounded-xl
+                  mt-6
+                  px-6
+                "
             >
-              Explore People
+              Discover People
             </Link>
           </div>
         )}
 
-        {/* ================= CONNECTION GRID ================= */}
+        {/* =================================================
+            CONNECTION LIST
+        ================================================= */}
+
         {!loading && !error && connections.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="space-y-4">
             {connections.map((connection) => (
               <ConnectionCard key={connection._id} user={connection} />
             ))}
@@ -284,237 +294,270 @@ const ConnectionCard = ({ user }) => {
 
   const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     fullName || "User",
-  )}&background=random`;
+  )}&background=random&color=fff`;
 
   return (
     <div
       className="
         group
-        relative
-        overflow-hidden
 
-        rounded-3xl
-
-        bg-base-100/75
-        backdrop-blur-xl
+        bg-base-100
 
         border border-base-content/10
 
-        shadow-[0_8px_30px_rgba(0,0,0,0.06)]
+        rounded-2xl
+
+        p-4 sm:p-5
 
         transition-all duration-300
 
-        hover:-translate-y-1.5
-        hover:shadow-[0_18px_45px_rgba(0,0,0,0.12)]
-        hover:border-primary/20
+        hover:border-primary/30
+        hover:shadow-lg
+        hover:-translate-y-0.5
       "
     >
-      {/* TOP GRADIENT */}
-      <div
-        className="
-          absolute
-          top-0
-          left-0
-          right-0
-          h-24
+      <div className="flex flex-col sm:flex-row gap-5">
+        {/* =================================================
+            PROFILE IMAGE
+        ================================================= */}
 
-          bg-gradient-to-br
-          from-primary/20
-          via-primary/5
-          to-transparent
-        "
-      />
+        <div className="relative shrink-0">
+          <img
+            src={user?.profilePhoto || fallbackImage}
+            alt={fullName || "User"}
+            className="
+              w-20
+              h-20
 
-      {/* ================= CARD CONTENT ================= */}
-      <div className="relative p-6">
-        {/* PROFILE IMAGE */}
-        <div className="flex justify-center">
-          <div className="relative">
-            <div
-              className="
-                p-1
-                rounded-full
-                bg-base-100
-                shadow-lg
-                ring-1 ring-primary/20
-              "
-            >
-              <img
-                src={user?.profilePhoto || fallbackImage}
-                alt={fullName}
+              sm:w-24
+              sm:h-24
+
+              rounded-2xl
+
+              object-cover
+
+              ring-1
+              ring-base-content/10
+
+              transition-transform
+              duration-300
+
+              group-hover:scale-[1.03]
+            "
+          />
+        </div>
+
+        {/* =================================================
+            USER INFORMATION
+        ================================================= */}
+
+        <div className="flex-1 min-w-0">
+          {/* NAME + BUTTON */}
+
+          <div
+            className="
+              flex
+              flex-col
+              sm:flex-row
+              sm:items-start
+              sm:justify-between
+              gap-3
+            "
+          >
+            <div className="min-w-0">
+              <h2
                 className="
-                  w-24
-                  h-24
-                  rounded-full
-                  object-cover
-
-                  transition-transform duration-500
-                  group-hover:scale-105
+                  text-lg
+                  sm:text-xl
+                  font-bold
+                  truncate
                 "
-              />
+              >
+                {fullName || "Unknown User"}
+              </h2>
+
+              <div className="flex items-center flex-wrap gap-2 mt-1">
+                {user?.age && (
+                  <span className="text-sm text-base-content/50">
+                    {user.age} years
+                  </span>
+                )}
+
+                {user?.gender && (
+                  <>
+                    <span className="text-base-content/20">•</span>
+
+                    <span
+                      className="
+                        text-sm
+                        text-base-content/50
+                        capitalize
+                      "
+                    >
+                      {user.gender}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* ONLINE DOT */}
-            <span
+            {/* DESKTOP VIEW PROFILE */}
+
+            <Link
+              to={`/profile/${user._id}`}
               className="
-                absolute
-                bottom-1
-                right-1
+                hidden
+                sm:flex
+                items-center
+                gap-2
 
-                w-5
-                h-5
+                px-4
+                py-2
 
-                rounded-full
+                rounded-xl
 
-                bg-success
+                border
+                border-base-content/10
 
-                border-4
-                border-base-100
+                text-sm
+                font-semibold
 
-                shadow-sm
-              "
-            />
-          </div>
-        </div>
+                hover:bg-primary
+                hover:text-primary-content
+                hover:border-primary
 
-        {/* NAME */}
-        <div className="text-center mt-4">
-          <h2 className="text-lg font-bold truncate">
-            {fullName || "Unknown User"}
-          </h2>
-
-          {/* AGE */}
-          {user?.age && (
-            <p className="text-sm text-base-content/50 mt-1">
-              {user.age} years old
-            </p>
-          )}
-        </div>
-
-        {/* BADGES */}
-        <div className="flex justify-center flex-wrap gap-2 mt-4">
-          {user?.gender && (
-            <span
-              className="
-                px-3 py-1
-
-                rounded-full
-
-                text-xs
-                font-medium
-
-                bg-primary/10
-                text-primary
+                transition-all
               "
             >
-              {user.gender}
-            </span>
-          )}
+              View Profile
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </Link>
+          </div>
+
+          {/* =================================================
+              PROFESSION
+          ================================================= */}
 
           {user?.profession && (
-            <span
-              className="
-                px-3 py-1
+            <div className="mt-3">
+              <span
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
 
-                rounded-full
+                  px-3
+                  py-1.5
 
-                text-xs
-                font-medium
+                  rounded-lg
 
-                bg-secondary/10
-                text-secondary
-              "
-            >
-              {user.profession}
-            </span>
+                  bg-primary/10
+                  text-primary
+
+                  text-xs
+                  font-semibold
+                "
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M20.25 14.15v4.098a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V14.15m16.5 0v-1.2a2.25 2.25 0 0 0-2.25-2.25h-3.75v-1.5a1.5 1.5 0 0 0-1.5-1.5h-3a1.5 1.5 0 0 0-1.5 1.5v1.5H6a2.25 2.25 0 0 0-2.25 2.25v1.2m16.5 0a8.25 8.25 0 0 1-16.5 0"
+                  />
+                </svg>
+
+                {user.profession}
+              </span>
+            </div>
           )}
-        </div>
 
-        {/* ABOUT */}
-        <div
-          className="
-            mt-5
-            p-3.5
-            rounded-2xl
+          {/* =================================================
+              ABOUT
+          ================================================= */}
 
-            bg-base-200/60
-
-            border border-base-content/5
-          "
-        >
           <p
             className="
               text-sm
               text-base-content/60
               leading-relaxed
+              mt-4
 
               line-clamp-2
-              min-h-[40px]
+
+              max-w-2xl
             "
           >
-            {user?.about || "No information available about this user."}
+            {user?.about || "This user hasn't added an introduction yet."}
           </p>
-        </div>
 
-        {/* ACTIONS */}
-        <div className="flex gap-2 mt-5">
+          {/* =================================================
+              MOBILE BUTTON
+          ================================================= */}
+
           <Link
             to={`/profile/${user._id}`}
             className="
-              flex-1
+              sm:hidden
 
-              btn
-              btn-primary
+              flex
+              items-center
+              justify-center
+              gap-2
+
+              w-full
+
+              mt-4
+              py-2.5
 
               rounded-xl
 
+              bg-primary
+              text-primary-content
+
               text-sm
+              font-semibold
 
-              shadow-md
-              shadow-primary/10
+              transition-all
 
-              hover:shadow-lg
-              hover:shadow-primary/20
-
-              transition-all duration-300
+              hover:opacity-90
             "
           >
             View Profile
-          </Link>
-
-          <button
-            className="
-              btn
-              btn-square
-
-              rounded-xl
-
-              bg-base-200/80
-
-              border-0
-
-              hover:bg-primary/10
-              hover:text-primary
-
-              transition-all duration-300
-            "
-            title="Message"
-          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
+              className="w-4 h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth="1.8"
+              strokeWidth="2"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M8.625 9.75h6.75m-6.75 3h4.125M21 12a8.25 8.25 0 0 1-8.25 8.25c-1.383 0-2.687-.34-3.83-.94L4.5 20.25l.94-4.42A8.25 8.25 0 1 1 21 12Z"
+                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
               />
             </svg>
-          </button>
+          </Link>
         </div>
       </div>
     </div>
