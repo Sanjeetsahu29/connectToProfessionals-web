@@ -199,8 +199,8 @@ const EditProfile = () => {
       return;
     }
 
-    if (age < 18) {
-      setError("Age must be at least 18.");
+    if (age < 2) {
+      setError("Age must be at least 2.");
       return;
     }
 
