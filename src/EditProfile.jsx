@@ -710,7 +710,7 @@ const EditProfile = () => {
                         value={formData.age}
                         onChange={handleChange}
                         placeholder="Enter your age"
-                        min="18"
+                        min="2"
                         max="100"
                         step="1"
                         className="input input-bordered w-full rounded-xl focus:input-primary"
@@ -718,7 +718,7 @@ const EditProfile = () => {
 
                       <label className="label">
                         <span className="label-text-alt text-base-content/40">
-                          Age must be between 18 and 100
+                          Age must be between 2 and 100
                         </span>
                       </label>
                     </div>
